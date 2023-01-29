@@ -1,49 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgre
-spec:
-  selector: 
-    matchLabels:
-      app: postgre
-  template:
-    metadata:
-      labels:
-        app: postgre
-    spec:
-      containers:
-        - name: postgre
-          image: postgres:15.0
-          ports:
-          - containerPort: 5432
-          env:
-          - name: POSTGRES_DB
-            value: "kubenews"
-          - name: POSTGRES_USER
-            value: "kubenews"
-          - name: POSTGRES_PASSWORD
-            value: "Pg#123"
-
----
-
-apiVersion: v1
-kind: Service
-metadata:
-  name: postgre
-spec:
-  selector:
-    app: postgre
-  ports:
-    - port: 5432
-  type: ClusterIP
-
----
-
-apiVersion: apps/v1
-kind: Deployment
-metadata:
   name: web
 spec:
+  replicas: 4
   selector: 
     matchLabels:
       app: web
@@ -53,34 +13,20 @@ spec:
         app: web
     spec:
       containers:
-        - name: postgre
-          image: fabricioveronez/kube-news:{{TAG}}
-          ports:
-          - containerPort: 8080
-          env:
-          - name: DB_DATABASE
-            value: "kubenews"
-          - name: DB_USERNAME
-            value: "kubenews"
-          - name: DB_PASSWORD
-            value: "Pg#123"
-          - name: DB_HOST
-            value: "postgre"
-
+      - name: site
+        image: fabricioveronez/web-page:green
+        ports:
+        - containerPort: 80
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
-  name: web
+  name: web-page
 spec:
   selector:
     app: web
   ports:
     - port: 80
-      targetPort: 8080
+      protocol: TCP
       nodePort: 30000
-  type: LoadBalancer
-
-
-
+  type: NodePort
