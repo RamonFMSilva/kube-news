@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: web
+  name: postgre
 spec:
   selector: 
     matchLabels:
@@ -12,7 +12,7 @@ spec:
         app: postgre
     spec:
       containers:
-        - name: web
+        - name: postgre
           image: postgres:15.0
           ports:
           - containerPort: 5432
@@ -29,7 +29,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: web
+  name: postgre
 spec:
   selector:
     app: postgre
@@ -79,6 +79,7 @@ spec:
   ports:
     - port: 80
       targetPort: 8080
+      nodePort: 30000
   type: LoadBalancer
 
 
