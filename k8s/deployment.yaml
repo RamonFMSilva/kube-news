@@ -53,7 +53,7 @@ spec:
         app: web
     spec:
       containers:
-        - name: postgre
+        - name: web
           image: fabricioveronez/kube-news:{{TAG}}
           ports:
           - containerPort: 8080
